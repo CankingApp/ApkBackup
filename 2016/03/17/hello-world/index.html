@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="NotificationListenerService 安卓通知栏管理详解及分析一. 方法概述在api 18前可以通过辅助功能’AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED’或是反射活取通知栏相关信息。现在我们可以根据NotificationListenerService类非常容易的活取通知回调相关信息。
+二. NotificationLis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://yoursite.com/2016/03/17/hello-world/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="NotificationListenerService 安卓通知栏管理详解及分析一. 方法概述在api 18前可以通过辅助功能’AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED’或是反射活取通知栏相关信息。现在我们可以根据NotificationListenerService类非常容易的活取通知回调相关信息。
+二. NotificationLis">
+<meta property="og:image" content="http://yoursite.com/./screenshot/demo.png">
+<meta property="og:image" content="http://yoursite.com/./screenshot/scr_a.png">
+<meta property="og:image" content="http://yoursite.com/./screenshot/scr_b.png">
+<meta property="og:updated_time" content="2016-03-11T09:23:56.980Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo">
+<meta name="twitter:description" content="NotificationListenerService 安卓通知栏管理详解及分析一. 方法概述在api 18前可以通过辅助功能’AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED’或是反射活取通知栏相关信息。现在我们可以根据NotificationListenerService类非常容易的活取通知回调相关信息。
+二. NotificationLis">
+<meta name="twitter:image" content="http://yoursite.com/./screenshot/demo.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/03/17/hello-world/" class="article-date">
+  <time datetime="2016-03-17T08:19:26.332Z" itemprop="datePublished">2016-03-17</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="NotificationListenerService-安卓通知栏管理详解及分析"><a href="#NotificationListenerService-安卓通知栏管理详解及分析" class="headerlink" title="NotificationListenerService 安卓通知栏管理详解及分析"></a>NotificationListenerService 安卓通知栏管理详解及分析</h2><h3 id="一-方法概述"><a href="#一-方法概述" class="headerlink" title="一. 方法概述"></a>一. 方法概述</h3><p>在api 18前可以通过辅助功能’AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED’或是<em>反射</em>活取通知栏相关信息。<br>现在我们可以根据<em>NotificationListenerService</em>类非常容易的活取通知回调相关信息。</p>
+<h3 id="二-NotificationListenerService详解"><a href="#二-NotificationListenerService详解" class="headerlink" title="二. NotificationListenerService详解"></a>二. NotificationListenerService详解</h3><p>通知的新增和删除，都会回调你注册的NLS里的方法，这些信息可以通过StatusBarNotification类对象来获取。</p>
+<h4 id="NotificationListenerService主要方法-成员变量-："><a href="#NotificationListenerService主要方法-成员变量-：" class="headerlink" title="NotificationListenerService主要方法(成员变量)："></a>NotificationListenerService主要方法(成员变量)：</h4><p>删除通知时会回调onNotificationRemoved, 新增通知或是更新时会回调onNotificationPosted</p>
+<ul>
+<li>cancelAllNotifications() ：删除系统中所有 <em>可被清除</em> 的通知； </li>
+<li>cancelNotification(String pkg, String tag, int id) ：删除具体某一个通知；</li>
+<li>getActiveNotifications() ：返回当前系统所有通知到StatusBarNotification[]的列表；</li>
+<li>onNotificationPosted(StatusBarNotification sbn) ：当系统收到新的通知后出发回调； </li>
+<li>onNotificationRemoved(StatusBarNotification sbn) ：当系统通知被删掉后出发回调；</li>
+</ul>
+<h4 id="StatusBarNotification类详解"><a href="#StatusBarNotification类详解" class="headerlink" title="StatusBarNotification类详解"></a>StatusBarNotification类详解</h4><p>StatusBarNotification，多进程传递对象，所有通知信息都会在这个类中通过Binder传递过来.<br>内部几个重要的方法如下：</p>
+<ul>
+<li>getId()：返回通知对应的id；</li>
+<li>getNotification()：返回通知对象；</li>
+<li>getPackageName()：返回通知对应的包名；</li>
+<li>getPostTime()：返回通知发起的时间；</li>
+<li>getTag()：返回通知的Tag，如果没有设置返回null；</li>
+<li>isClearable()：返回该通知是否可被清楚，FLAG_ONGOING_EVENT、FLAG_NO_CLEAR；</li>
+<li>isOngoing()：检查该通知的flag是否为FLAG_ONGOING_EVENT；</li>
+</ul>
+<p>其中，我们通过getNotification()可以得到Notification对象，Notification是我们比较熟悉的类了，我们可以得到通知具体内容甚至可以还原RemoteViews到我们的本地view上。</p>
+<h3 id="三-使用方法"><a href="#三-使用方法" class="headerlink" title="三. 使用方法"></a>三. 使用方法</h3><p>正确使用NotificationListenerService需要进行三步骤：</p>
+<h4 id="1-新建一个类并继承自NotificationListenerService，override其中重要的两个方法；"><a href="#1-新建一个类并继承自NotificationListenerService，override其中重要的两个方法；" class="headerlink" title="1. 新建一个类并继承自NotificationListenerService，override其中重要的两个方法；"></a>1. 新建一个类并继承自NotificationListenerService，override其中重要的两个方法；</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NLService</span> <span class="keyword">extends</span> <span class="title">NotificationListenerService</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onNotificationPosted</span><span class="params">(StatusBarNotification sbn)</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onNotificationRemoved</span><span class="params">(StatusBarNotification sbn)</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="2-在AndroidManifest-xml中注册Service并声明相关权限；"><a href="#2-在AndroidManifest-xml中注册Service并声明相关权限；" class="headerlink" title="2. 在AndroidManifest.xml中注册Service并声明相关权限；"></a>2. 在AndroidManifest.xml中注册Service并声明相关权限；</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">service</span> <span class="attr">android:name</span>=<span class="string">".NLService"</span></span><br><span class="line">       <span class="attr">android:label</span>=<span class="string">"@string/service_name"</span></span><br><span class="line">       <span class="attr">android:permission</span>=<span class="string">"android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">action</span> <span class="attr">android:name</span>=<span class="string">"android.service.notification.NotificationListenerService"</span> /&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">service</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h4 id="3-开启NotificationMonitor的监听功能；"><a href="#3-开启NotificationMonitor的监听功能；" class="headerlink" title="3. 开启NotificationMonitor的监听功能；"></a>3. 开启NotificationMonitor的监听功能；</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">if</span> (!isEnabled()) &#123;</span><br><span class="line">    Intent intent = <span class="keyword">new</span> Intent(<span class="string">"android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"</span>);</span><br><span class="line">    startActivity(intent);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    Toast.makeText(<span class="keyword">this</span>, <span class="string">"已开启服务权限"</span>, Toast.LENGTH_LONG).show();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">isEnabled</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    String pkgName = getPackageName();</span><br><span class="line">    <span class="keyword">final</span> String flat = Settings.Secure.getString(getContentResolver(),</span><br><span class="line">            ENABLED_NOTIFICATION_LISTENERS);</span><br><span class="line">    <span class="keyword">if</span> (!TextUtils.isEmpty(flat)) &#123;</span><br><span class="line">        <span class="keyword">final</span> String[] names = flat.split(<span class="string">":"</span>);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; names.length; i++) &#123;</span><br><span class="line">            <span class="keyword">final</span> ComponentName cn = ComponentName.unflattenFromString(names[i]);</span><br><span class="line">            <span class="keyword">if</span> (cn != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (TextUtils.equals(pkgName, cn.getPackageName())) &#123;</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="四-Demo讲解"><a href="#四-Demo讲解" class="headerlink" title="四. Demo讲解"></a>四. Demo讲解</h3><p>根据以上步骤，已经可以接收到通知栏变换时的回调，及获取当前所有通知列表，我们限制写个小例子，活取所有通知列表并且监听通知栏的变换，把收到的Notification及相关信息展示到我们的页面ListView中．</p>
+<h4 id="1-按照以上步骤建立基本例子框架"><a href="#1-按照以上步骤建立基本例子框架" class="headerlink" title="1. 按照以上步骤建立基本例子框架"></a>1. 按照以上步骤建立基本例子框架</h4><p>写布局，要有开启服务的btn, 活取所有通知的btn和清除所有列表的btn, 界面比较简陋，如图：</p>
+<p><img src="./screenshot/demo.png" alt="Demo截图"></p>
+<h4 id="2-建立BroadcastReceiver和Service交互"><a href="#2-建立BroadcastReceiver和Service交互" class="headerlink" title="2. 建立BroadcastReceiver和Service交互"></a>2. 建立BroadcastReceiver和Service交互</h4><p>当然也可以用binder说是message通信,根据自己程序设计选择,这里为了简单的演示用了BroadcastReceiver机制</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NotificationReceiver</span> <span class="keyword">extends</span> <span class="title">BroadcastReceiver</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onReceive</span><span class="params">(Context context, Intent intent)</span> </span>&#123;</span><br><span class="line">        String temp = mInfoList.size() + <span class="string">"："</span> + intent.getStringExtra(EVENT);</span><br><span class="line">        NTBean bean = <span class="keyword">new</span> NTBean();</span><br><span class="line">        bean.info = temp;</span><br><span class="line"></span><br><span class="line">        Bundle budle = intent.getExtras();</span><br><span class="line">        bean.title = budle.getString(Notification.EXTRA_TITLE);</span><br><span class="line">        bean.text = budle.getString(Notification.EXTRA_TEXT);</span><br><span class="line">        bean.subText = budle.getString(Notification.EXTRA_SUB_TEXT);</span><br><span class="line">        bean.largeIcon = budle.getParcelable(Notification.EXTRA_LARGE_ICON);</span><br><span class="line">        Icon icon = budle.getParcelable(Notification.EXTRA_SMALL_ICON);</span><br><span class="line">        bean.smallIcon = icon;</span><br><span class="line"></span><br><span class="line">        bean.viewS = budle.getParcelable(VIEW_S);</span><br><span class="line">        bean.viewL = budle.getParcelable(View_L);</span><br><span class="line"></span><br><span class="line">        mInfoList.add(bean);</span><br><span class="line">        Log.e(<span class="string">"changxing"</span>, <span class="string">"receive:"</span> + temp + <span class="string">"\n"</span> + budle);</span><br><span class="line">        mAdapter.notifyDataSetChanged();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="3-活取相关回调展示页面"><a href="#3-活取相关回调展示页面" class="headerlink" title="3. 活取相关回调展示页面"></a>3. 活取相关回调展示页面</h4><p>将回调的相关参数传递到activity中, 展示到listview中,其中可以直接用<strong>RemoteViews#apply</strong>方法将Notification展示到我们本地<em>ViewGroup</em>中.</p>
+<p>程序运行如下:</p>
+<p><img src="./screenshot/scr_a.png" alt="程序运行截图"><br><img src="./screenshot/scr_b.png" alt="程序运行截图"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/03/17/hello-world/" data-id="cilw905vm0000cx752e6m6tyv" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/03/17/hello-world/">(no title)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
